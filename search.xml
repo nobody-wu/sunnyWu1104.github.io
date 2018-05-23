@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title><![CDATA[【Nginx】root和alias指令区别小记]]></title>
-    <url>%2F2018%2F05%2F23%2F%E3%80%90Nginx%E3%80%91root%E5%92%8Calias%E6%8C%87%E4%BB%A4%E5%8C%BA%E5%88%AB%E5%B0%8F%E8%AE%B0%2F</url>
-    <content type="text"><![CDATA[问题：今天在搭建前端react项目的时候，nginx部署遇到了一个小问题:当前项目下引用的一些静态资源没有加载到，一直报错404，导致样式展示不全。 一直在怀疑是代码中引用的相对路径的问题，修改后问题还是无法修复。 怀疑nginx容器需要重启，问题还是无法修复。 排查nginx配置文件信息，发现了一些端倪： 原配置文件数据1234567891011121314151617181920server &#123; listen 8800; server_name lcoalhost; access_log /data/www/logs/nginx/nginx_access.log local; location / &#123; root /data/www/static; index index.html;# try_files $uri $uri/index.html; &#125; error_page 405 =200 $uri; location /cashwallet &#123; alias /data/www/static; index index.html; try_files $uri /shaxiaoseng/index.html; &#125; 熟悉nginx的同学，估计在这里一眼就能发现问题了，不过我这边就直接贴出来修改后的配置文件: 123456789101112131415server &#123; listen 8888; server_name lcoalhost; access_log /data/www/logs/nginx/nginx_access.log local; location /cashwallet &#123; root /data/www/static; index index.html; try_files $uri /shaxiaoseng/index.html;# try_files $uri $uri/index.html; &#125; error_page 405 =200 $uri; 在这里我们可以发现一些改变：我将location下的alias修改为了root 原因alias指令对于root，操作上很简单，只要把root地址替换host后就是文件在硬盘路径（真实地址）。对于alise，它并不是替换匹配后的url地址，而是替换匹配部分的url。alias指令也可以有多个 eg使用root指令，查询的资源路径会是: /cashwallet/data/www/static/cashwallet 使用alias指令，查询的资源路径会是: /data/www/static/cashwallet 所以会导致查无资源的问题。 愿意的朋友，可以去【传送门】看这篇更为详细的介绍对比]]></content>
+<search> 
+  
+    
+    <entry>
+      <title>【Nginx】root和alias指令区别小记</title>
+      <link href="/2018/05/23/%E3%80%90Nginx%E3%80%91root%E5%92%8Calias%E6%8C%87%E4%BB%A4%E5%8C%BA%E5%88%AB%E5%B0%8F%E8%AE%B0/"/>
+      <url>/2018/05/23/%E3%80%90Nginx%E3%80%91root%E5%92%8Calias%E6%8C%87%E4%BB%A4%E5%8C%BA%E5%88%AB%E5%B0%8F%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>今天在搭建前端react项目的时候，nginx部署遇到了一个小问题:当前项目下引用的一些静态资源没有加载到，一直报错404，导致样式展示不全。</p><h3 id="排查问题："><a href="#排查问题：" class="headerlink" title="排查问题："></a>排查问题：</h3><ol><li>一直在怀疑是代码中引用的相对路径的问题，修改后问题还是无法修复。</li><li>怀疑nginx容器需要重启，问题还是无法修复。</li><li>排查nginx配置文件信息，发现了一些端倪：</li></ol><h4 id="原配置文件数据"><a href="#原配置文件数据" class="headerlink" title="原配置文件数据:"></a>原配置文件数据:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8800;</span><br><span class="line">        server_name  lcoalhost;</span><br><span class="line">        access_log /data/www/logs/nginx/nginx_access.log  local;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">          root  /data/www/static;</span><br><span class="line">          index index.html;</span><br><span class="line"></span><br><span class="line">#       try_files $uri $uri/index.html;</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        error_page  405     =200 $uri;</span><br><span class="line"></span><br><span class="line">         location  /cashwallet &#123;</span><br><span class="line">             alias  /data/www/static;</span><br><span class="line">            index index.html;</span><br><span class="line">            try_files $uri /shaxiaoseng/index.html;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure><p>熟悉nginx的同学，估计在这里一眼就能发现问题了，不过我这边就直接贴出来修改后的配置文件</p><h4 id="修改后的配置文件"><a href="#修改后的配置文件" class="headerlink" title="修改后的配置文件:"></a>修改后的配置文件:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8888;</span><br><span class="line">        server_name  lcoalhost;</span><br><span class="line">        access_log /data/www/logs/nginx/nginx_access.log  local;</span><br><span class="line"></span><br><span class="line">        location /cashwallet &#123;</span><br><span class="line">          root  /data/www/static;</span><br><span class="line">          index index.html;</span><br><span class="line">          try_files $uri /shaxiaoseng/index.html;</span><br><span class="line"></span><br><span class="line">#       try_files $uri $uri/index.html;</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        error_page  405     =200 $uri;</span><br></pre></td></tr></table></figure><p><strong> 在这里我们可以发现一些改变：我将location下的alias修改为了root </strong></p><h2 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h2><p>alias指令对于root，操作上很简单，只要把root地址替换host后就是文件在硬盘路径（真实地址）。对于alise，它并不是替换匹配后的url地址，而是替换匹配部分的url。alias指令也可以有多个</p><h2 id="eg"><a href="#eg" class="headerlink" title="eg:"></a>eg:</h2><p>使用root指令，查询的资源路径会是: /cashwallet/data/www/static/cashwallet</p><p>使用alias指令，查询的资源路径会是: /data/www/static/cashwallet</p><p>所以会导致查无资源的问题。</p><h2 id="传送门"><a href="#传送门" class="headerlink" title="传送门:"></a>传送门:</h2><p>愿意的朋友，可以去<a href="https://www.jianshu.com/p/4be0d5882ec5" target="_blank" rel="noopener">【传送门】</a>看这篇更为详细的介绍对比</p>]]></content>
+      
       <categories>
-        <category>nginx日常小记</category>
+          
+          <category> nginx日常小记 </category>
+          
       </categories>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Hello World]]></title>
-    <url>%2F2018%2F05%2F16%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
-  </entry>
+      
+      
+        <tags>
+            
+            <tag> nginx </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2018/05/16/hello-world/"/>
+      <url>/2018/05/16/hello-world/</url>
+      <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+      
+      
+    </entry>
+    
+  
+  
 </search>
