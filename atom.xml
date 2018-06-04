@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://sunnyWu1104.github.io/"/>
-  <updated>2018-05-23T05:26:33.000Z</updated>
+  <updated>2018-06-04T02:55:59.000Z</updated>
   <id>https://sunnyWu1104.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【SS/SSR】GFW与SS/SSR</title>
+    <link href="https://sunnyWu1104.github.io/2018/06/04/GFW%E4%B8%8ESS&amp;SSR/"/>
+    <id>https://sunnyWu1104.github.io/2018/06/04/GFW与SS&amp;SSR/</id>
+    <published>2018-06-04T02:41:26.000Z</published>
+    <updated>2018-06-04T02:55:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="Phase-1"><a href="#Phase-1" class="headerlink" title="Phase 1:"></a>Phase 1:</h3><p>起初,我们对网络的访问时非常直接的,我们(客户端)向对方(服务端)发出请求,对方回应请求.</p><p><img src="http://p95stksgt.bkt.clouddn.com/ss1.jpg" alt="ss1"></p><h3 id="Phase-2"><a href="#Phase-2" class="headerlink" title="Phase 2:"></a>Phase 2:</h3><p>后来,建立了GFW(Great FireWall),也就是伟大的中国国家防火墙.</p><p><img src="http://p95stksgt.bkt.clouddn.com/ss2.jpg" alt="ss2"></p><p>下面花一点篇幅说几个GFW的封锁原理.</p><h4 id="1-域名解析服务缓存污染"><a href="#1-域名解析服务缓存污染" class="headerlink" title="1.域名解析服务缓存污染"></a>1.域名解析服务缓存污染</h4><p>首先,GFW使用了返回错误的DNS查询结果的方式,比如,当长城监听它骨干出口上某端口的DNS查询(当然这是UDP),接着对其进行入侵检测,一旦发现了和黑名单上关键词相匹配的域名查询请求,就会马上开始当演员,返回一个虚假的结果,这样,我们就会遭遇连接重置，无法获得目标网站的IP地址。</p><h4 id="2-针对境外的IP地址封锁"><a href="#2-针对境外的IP地址封锁" class="headerlink" title="2.针对境外的IP地址封锁"></a>2.针对境外的IP地址封锁</h4><p>防火长城的路由扩散技术中使用的静态路由其实是一条错误的路由，而且是有意配置错误的，其目的就是为了把本来是发往某个IP地址的数据包统统引导到一个“黑洞服务器”上，这个黑洞服务器上可以什么也不做，这样数据包就被无声无息地丢掉了,当然也可以进行一个虚假的回复.接着通过路由重分发,整个网络被打通,大家就都知道这样的IP要发向这么一个黑洞了,效率也得到了提升(封IP封的越来越开心了呢)</p><h4 id="3-IP地址特定端口封锁"><a href="#3-IP地址特定端口封锁" class="headerlink" title="3.IP地址特定端口封锁"></a>3.IP地址特定端口封锁</h4><p>结合2,为了达到更精确的封锁,长城会对特定端口上的数据包进行全部丢弃,以达到更彻底的封锁.</p><p>常常封锁的端口:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SSH           TCP      22</span><br><span class="line">HTTP                   80</span><br><span class="line">(PPTP)VPN     TCP      1723</span><br><span class="line">(L2TP)VPN     UDP      1701</span><br><span class="line">IPSec/L2TP    UDP      500&amp;4500</span><br><span class="line">OpenVPN       TCP/UDP  1194</span><br><span class="line">TLS/SSL/HTTPS TCP      443</span><br></pre></td></tr></table></figure><p>另外,中国X动,中国X通等ISP的手机IP端,所有的PPTP都被封锁.</p><h4 id="4-对加密连接的干扰"><a href="#4-对加密连接的干扰" class="headerlink" title="4.对加密连接的干扰"></a>4.对加密连接的干扰</h4><p>(不太了解加密握手可以看看隔壁的TLS/SSL)<br>在连接握手时，因为服务器的公钥是明文传输的，长城会阻断特定证书的加密连接，方法和无状态TCP连接重置一样，都是先发现匹配的黑名单证书，之后通过伪装成对方向连接两端的计算机发送RST干扰两者间正常的TCP连接，进而打断与特定IP地址之间的TLS加密连接握手，或者干脆直接将握手的数据包丢弃导致握手失败，从而导致TLS连接失败.</p><h4 id="5-深度包检测"><a href="#5-深度包检测" class="headerlink" title="5.深度包检测"></a>5.深度包检测</h4><p>深度数据包检测(Deep Package Inspection)是一种于应用层对网络上传递的数据进行侦测与处理的技术，DPI可对报文内容和协议特征进行检测。(似乎这个就是所谓的流量审查)</p><p>在中国大陆，DPI一度被ISP用于追踪用户行为以改善其广告推送业务的精准性，长城赖以检测关键词及嗅探加密流量的重要技术之一.基于必要的硬件设施、适宜的检测模型及相应的模式匹配算法，长城能够精确且快速地从实时网络环境中判别出有悖于预期标准的可疑流量，并对此及时作出相应地应对措施.</p><h3 id="Phase-3"><a href="#Phase-3" class="headerlink" title="Phase 3:"></a>Phase 3:</h3><p><img src="http://p95stksgt.bkt.clouddn.com/ss3.jpg" alt="ss3"></p><p>针对一些封锁技术,勤劳智慧而又充满勇气的天朝人民,使用了境外HTTP服务器代理,SOCKS服务,VPN 等等各种方式来 Break the GFW.</p><p>然而,尽管SSH是安全的,长城并不能知道里面发生了什么样的数据交换,它却依旧能在建立隧道时,分析连接特征从而进行干扰或是重定向连接.</p><p>其他的几种方式,也都差不多.</p><h3 id="Phase-4"><a href="#Phase-4" class="headerlink" title="Phase 4:"></a>Phase 4:</h3><p><img src="http://p95stksgt.bkt.clouddn.com/ss4.png" alt="ss4"></p><p>于是,出现了cloudwindy同学…带来的SS,没错,他被警察请去喝茶了.</p><p>延续Phase3,ShadowSocks实际上是将 SSH 创建的<br>SOCKS5协议 拆成两个部分,server 端和 client 端</p><p>不同的地方在于,客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题.<br>那么,就总体来说一下SS的运作流程:</p><p>首先,在服务器上配置好了 SS 服务器后,用户按照指定的密码、加密方式和端口使用 SS 客户端与其连接。在成功连接到服务器后，客户端会在用户的电脑上构建一个本地<br>Socks5 代理。浏览网络时，网络流量会被分到本地<br>socks5 代理，客户端将其加密之后发送到服务器，服务器以同样的加密方式将流量回传给客户端，以此实现代理上网。</p><h3 id="Phase-5"><a href="#Phase-5" class="headerlink" title="Phase 5:"></a>Phase 5:</h3><p>后来,似乎GFW对SS的流量有了某种辨识能力,于是,Github上一位叫BreakWa11的作者修改了原SS的代码,增加了混淆以及其他的一些功能(这里面有场不小的风波,从中可以学到一些开源协议的知识…感兴趣的去搜搜看),名为SSR.</p><p>其中使用的混淆机制有:</p><ul><li>http_simple</li><li>tls_simple</li><li>random_head</li><li>tls1.0_session_auth</li></ul><p>说说这其中比较好理解的</p><p>tls1.0_session_auth:模拟TLS1.0在客户端有session ID的情况下的握手连接。因为有session ID所以没有发送证书等复杂步骤，因而防火墙无法根据证书做判断(之前说过),同时自带一定的抗重放攻击的能力。</p><p>由于防火墙对TLS比较无能为力，抗封锁能力较强</p><p>random_head：开始通讯前发送一个几乎为随机的数据包,之后为原协议流。目标是让首个数据包根本不存在任何有效信息,使得GFW的统计学习机制失效.</p><h2 id="传送门"><a href="#传送门" class="headerlink" title="传送门:"></a>传送门:</h2><p>转自<a href="https://justin13wyx.me/2017/04/13/SS-SSR/" target="_blank" rel="noopener">【传送门】</a></p><p>Post author: Justin13<br>Post link: <a href="https://justin13wyx.me/2017/04/13/SS-SSR/" target="_blank" rel="noopener">https://justin13wyx.me/2017/04/13/SS-SSR/</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h3 id=&quot;Phase-1&quot;&gt;&lt;a href=&quot;#Phase-1&quot; class=&quot;headerlink&quot; title=&quot;Phase 1:&quot;&gt;&lt;/a&gt;Phase 1:&lt;/h3&gt;&lt;p&gt;起初,我们对网络的访问时非常直接的,我们(客户端)向对方(服务端)发出请求,对方回应请求.&lt;/p
+      
+    
+    </summary>
+    
+      <category term="兴趣" scheme="https://sunnyWu1104.github.io/categories/%E5%85%B4%E8%B6%A3/"/>
+    
+    
+      <category term="SS/SSR" scheme="https://sunnyWu1104.github.io/tags/SS-SSR/"/>
+    
+  </entry>
   
   <entry>
     <title>【Nginx】root和alias指令区别小记</title>

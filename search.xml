@@ -1,37 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-    
-    <entry>
-      <title>【Nginx】root和alias指令区别小记</title>
-      <link href="/2018/05/23/%E3%80%90Nginx%E3%80%91root%E5%92%8Calias%E6%8C%87%E4%BB%A4%E5%8C%BA%E5%88%AB%E5%B0%8F%E8%AE%B0/"/>
-      <url>/2018/05/23/%E3%80%90Nginx%E3%80%91root%E5%92%8Calias%E6%8C%87%E4%BB%A4%E5%8C%BA%E5%88%AB%E5%B0%8F%E8%AE%B0/</url>
-      <content type="html"><![CDATA[<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>今天在搭建前端react项目的时候，nginx部署遇到了一个小问题:当前项目下引用的一些静态资源没有加载到，一直报错404，导致样式展示不全。</p><h3 id="排查问题："><a href="#排查问题：" class="headerlink" title="排查问题："></a>排查问题：</h3><ol><li>一直在怀疑是代码中引用的相对路径的问题，修改后问题还是无法修复。</li><li>怀疑nginx容器需要重启，问题还是无法修复。</li><li>排查nginx配置文件信息，发现了一些端倪：</li></ol><h4 id="原配置文件数据"><a href="#原配置文件数据" class="headerlink" title="原配置文件数据:"></a>原配置文件数据:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8800;</span><br><span class="line">        server_name  lcoalhost;</span><br><span class="line">        access_log /data/www/logs/nginx/nginx_access.log  local;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">          root  /data/www/static;</span><br><span class="line">          index index.html;</span><br><span class="line"></span><br><span class="line">#       try_files $uri $uri/index.html;</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        error_page  405     =200 $uri;</span><br><span class="line"></span><br><span class="line">         location  /cashwallet &#123;</span><br><span class="line">             alias  /data/www/static;</span><br><span class="line">            index index.html;</span><br><span class="line">            try_files $uri /shaxiaoseng/index.html;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure><p>熟悉nginx的同学，估计在这里一眼就能发现问题了，不过我这边就直接贴出来修改后的配置文件</p><h4 id="修改后的配置文件"><a href="#修改后的配置文件" class="headerlink" title="修改后的配置文件:"></a>修改后的配置文件:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       8888;</span><br><span class="line">        server_name  lcoalhost;</span><br><span class="line">        access_log /data/www/logs/nginx/nginx_access.log  local;</span><br><span class="line"></span><br><span class="line">        location /cashwallet &#123;</span><br><span class="line">          root  /data/www/static;</span><br><span class="line">          index index.html;</span><br><span class="line">          try_files $uri /shaxiaoseng/index.html;</span><br><span class="line"></span><br><span class="line">#       try_files $uri $uri/index.html;</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">        error_page  405     =200 $uri;</span><br></pre></td></tr></table></figure><p><strong> 在这里我们可以发现一些改变：我将location下的alias修改为了root </strong></p><h2 id="原因"><a href="#原因" class="headerlink" title="原因:"></a>原因:</h2><p>alias指令对于root，操作上很简单，只要把root地址替换host后就是文件在硬盘路径（真实地址）。对于alise，它并不是替换匹配后的url地址，而是替换匹配部分的url。alias指令也可以有多个</p><h2 id="eg"><a href="#eg" class="headerlink" title="eg:"></a>eg:</h2><p>使用root指令，查询的资源路径会是: /cashwallet/data/www/static/cashwallet</p><p>使用alias指令，查询的资源路径会是: /data/www/static/cashwallet</p><p>所以会导致查无资源的问题。</p><h2 id="传送门"><a href="#传送门" class="headerlink" title="传送门:"></a>传送门:</h2><p>愿意的朋友，可以去<a href="https://www.jianshu.com/p/4be0d5882ec5" target="_blank" rel="noopener">【传送门】</a>看这篇更为详细的介绍对比</p>]]></content>
-      
+<search>
+  <entry>
+    <title><![CDATA[【SS/SSR】GFW与SS/SSR]]></title>
+    <url>%2F2018%2F06%2F04%2FGFW%E4%B8%8ESS%26SSR%2F</url>
+    <content type="text"><![CDATA[Phase 1:起初,我们对网络的访问时非常直接的,我们(客户端)向对方(服务端)发出请求,对方回应请求. Phase 2:后来,建立了GFW(Great FireWall),也就是伟大的中国国家防火墙. 下面花一点篇幅说几个GFW的封锁原理. 1.域名解析服务缓存污染首先,GFW使用了返回错误的DNS查询结果的方式,比如,当长城监听它骨干出口上某端口的DNS查询(当然这是UDP),接着对其进行入侵检测,一旦发现了和黑名单上关键词相匹配的域名查询请求,就会马上开始当演员,返回一个虚假的结果,这样,我们就会遭遇连接重置，无法获得目标网站的IP地址。 2.针对境外的IP地址封锁防火长城的路由扩散技术中使用的静态路由其实是一条错误的路由，而且是有意配置错误的，其目的就是为了把本来是发往某个IP地址的数据包统统引导到一个“黑洞服务器”上，这个黑洞服务器上可以什么也不做，这样数据包就被无声无息地丢掉了,当然也可以进行一个虚假的回复.接着通过路由重分发,整个网络被打通,大家就都知道这样的IP要发向这么一个黑洞了,效率也得到了提升(封IP封的越来越开心了呢) 3.IP地址特定端口封锁结合2,为了达到更精确的封锁,长城会对特定端口上的数据包进行全部丢弃,以达到更彻底的封锁. 常常封锁的端口: 1234567SSH TCP 22HTTP 80(PPTP)VPN TCP 1723(L2TP)VPN UDP 1701IPSec/L2TP UDP 500&amp;4500OpenVPN TCP/UDP 1194TLS/SSL/HTTPS TCP 443 另外,中国X动,中国X通等ISP的手机IP端,所有的PPTP都被封锁. 4.对加密连接的干扰(不太了解加密握手可以看看隔壁的TLS/SSL)在连接握手时，因为服务器的公钥是明文传输的，长城会阻断特定证书的加密连接，方法和无状态TCP连接重置一样，都是先发现匹配的黑名单证书，之后通过伪装成对方向连接两端的计算机发送RST干扰两者间正常的TCP连接，进而打断与特定IP地址之间的TLS加密连接握手，或者干脆直接将握手的数据包丢弃导致握手失败，从而导致TLS连接失败. 5.深度包检测深度数据包检测(Deep Package Inspection)是一种于应用层对网络上传递的数据进行侦测与处理的技术，DPI可对报文内容和协议特征进行检测。(似乎这个就是所谓的流量审查) 在中国大陆，DPI一度被ISP用于追踪用户行为以改善其广告推送业务的精准性，长城赖以检测关键词及嗅探加密流量的重要技术之一.基于必要的硬件设施、适宜的检测模型及相应的模式匹配算法，长城能够精确且快速地从实时网络环境中判别出有悖于预期标准的可疑流量，并对此及时作出相应地应对措施. Phase 3: 针对一些封锁技术,勤劳智慧而又充满勇气的天朝人民,使用了境外HTTP服务器代理,SOCKS服务,VPN 等等各种方式来 Break the GFW. 然而,尽管SSH是安全的,长城并不能知道里面发生了什么样的数据交换,它却依旧能在建立隧道时,分析连接特征从而进行干扰或是重定向连接. 其他的几种方式,也都差不多. Phase 4: 于是,出现了cloudwindy同学…带来的SS,没错,他被警察请去喝茶了. 延续Phase3,ShadowSocks实际上是将 SSH 创建的SOCKS5协议 拆成两个部分,server 端和 client 端 不同的地方在于,客户端发出的请求基于 Socks5 协议跟 ss-local 端进行通讯，由于这个 ss-local 一般是本机或路由器或局域网的其他机器，不经过 GFW，所以解决了上面被 GFW 通过特征分析进行干扰的问题.那么,就总体来说一下SS的运作流程: 首先,在服务器上配置好了 SS 服务器后,用户按照指定的密码、加密方式和端口使用 SS 客户端与其连接。在成功连接到服务器后，客户端会在用户的电脑上构建一个本地Socks5 代理。浏览网络时，网络流量会被分到本地socks5 代理，客户端将其加密之后发送到服务器，服务器以同样的加密方式将流量回传给客户端，以此实现代理上网。 Phase 5:后来,似乎GFW对SS的流量有了某种辨识能力,于是,Github上一位叫BreakWa11的作者修改了原SS的代码,增加了混淆以及其他的一些功能(这里面有场不小的风波,从中可以学到一些开源协议的知识…感兴趣的去搜搜看),名为SSR. 其中使用的混淆机制有: http_simple tls_simple random_head tls1.0_session_auth 说说这其中比较好理解的 tls1.0_session_auth:模拟TLS1.0在客户端有session ID的情况下的握手连接。因为有session ID所以没有发送证书等复杂步骤，因而防火墙无法根据证书做判断(之前说过),同时自带一定的抗重放攻击的能力。 由于防火墙对TLS比较无能为力，抗封锁能力较强 random_head：开始通讯前发送一个几乎为随机的数据包,之后为原协议流。目标是让首个数据包根本不存在任何有效信息,使得GFW的统计学习机制失效. 传送门:转自【传送门】 Post author: Justin13Post link: https://justin13wyx.me/2017/04/13/SS-SSR/]]></content>
       <categories>
-          
-          <category> nginx日常小记 </category>
-          
+        <category>兴趣</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> nginx </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2018/05/16/hello-world/"/>
-      <url>/2018/05/16/hello-world/</url>
-      <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
-      
-      
-    </entry>
-    
-  
-  
+      <tags>
+        <tag>SS/SSR</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[【Nginx】root和alias指令区别小记]]></title>
+    <url>%2F2018%2F05%2F23%2F%E3%80%90Nginx%E3%80%91root%E5%92%8Calias%E6%8C%87%E4%BB%A4%E5%8C%BA%E5%88%AB%E5%B0%8F%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[问题：今天在搭建前端react项目的时候，nginx部署遇到了一个小问题:当前项目下引用的一些静态资源没有加载到，一直报错404，导致样式展示不全。 排查问题： 一直在怀疑是代码中引用的相对路径的问题，修改后问题还是无法修复。 怀疑nginx容器需要重启，问题还是无法修复。 排查nginx配置文件信息，发现了一些端倪： 原配置文件数据:1234567891011121314151617181920server &#123; listen 8800; server_name lcoalhost; access_log /data/www/logs/nginx/nginx_access.log local; location / &#123; root /data/www/static; index index.html;# try_files $uri $uri/index.html; &#125; error_page 405 =200 $uri; location /cashwallet &#123; alias /data/www/static; index index.html; try_files $uri /shaxiaoseng/index.html; &#125; 熟悉nginx的同学，估计在这里一眼就能发现问题了，不过我这边就直接贴出来修改后的配置文件 修改后的配置文件:123456789101112131415server &#123; listen 8888; server_name lcoalhost; access_log /data/www/logs/nginx/nginx_access.log local; location /cashwallet &#123; root /data/www/static; index index.html; try_files $uri /shaxiaoseng/index.html;# try_files $uri $uri/index.html; &#125; error_page 405 =200 $uri; 在这里我们可以发现一些改变：我将location下的alias修改为了root 原因:alias指令对于root，操作上很简单，只要把root地址替换host后就是文件在硬盘路径（真实地址）。对于alise，它并不是替换匹配后的url地址，而是替换匹配部分的url。alias指令也可以有多个 eg:使用root指令，查询的资源路径会是: /cashwallet/data/www/static/cashwallet 使用alias指令，查询的资源路径会是: /data/www/static/cashwallet 所以会导致查无资源的问题。 传送门:愿意的朋友，可以去【传送门】看这篇更为详细的介绍对比]]></content>
+      <categories>
+        <category>nginx日常小记</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <url>%2F2018%2F05%2F16%2Fhello-world%2F</url>
+    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
+  </entry>
 </search>
