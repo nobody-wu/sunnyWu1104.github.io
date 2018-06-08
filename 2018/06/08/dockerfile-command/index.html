@@ -141,7 +141,7 @@
 <meta property="og:description" content="Dockerfile是什么？简单说就是：镜像的定制 Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://p95stksgt.bkt.clouddn.com/docker01.png">
-<meta property="og:updated_time" content="2018-06-08T08:23:44.000Z">
+<meta property="og:updated_time" content="2018-06-08T08:54:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dockerfile命令详解">
 <meta name="twitter:description" content="Dockerfile是什么？简单说就是：镜像的定制 Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来">
@@ -437,7 +437,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3,897
+                  3,957
                 </span>
               
 
@@ -453,7 +453,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  16
+                  17
                 </span>
               
             </div>
@@ -481,7 +481,7 @@
 <h2 id="为什么用Dockerfile？"><a href="#为什么用Dockerfile？" class="headerlink" title="为什么用Dockerfile？"></a>为什么用Dockerfile？</h2><p>Dockerfile其实是用于微服务化项目中镜像内容的处理方法。用来定义镜像、依赖镜像来运行容器。<br>使用Dockerfile非常容易的定义镜像内的内容。</p>
 <p>Dockerfile 是一个文本文件，其内包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。有了 Dockerfile，当我们需要定制自己额外的需求时，只需在 Dockerfile 上添加或者修改指令，重新生成 image 即可，省去了敲命令的麻烦。</p>
 <p>换言之：我们可以通过一个简单的文件去创建镜像，启动容器等等的一系列脚本的动作。更方便的使我们部署项目</p>
-<h2 id="Dcokerfile文件格式"><a href="#Dcokerfile文件格式" class="headerlink" title="Dcokerfile文件格式"></a>Dcokerfile文件格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">##  Dockerfile文件格式</span><br><span class="line"></span><br><span class="line"># This dockerfile uses the ubuntu image</span><br><span class="line"># VERSION 2 - EDITION 1</span><br><span class="line"># Author: docker_user</span><br><span class="line"># Command format: Instruction [arguments / command] ..</span><br><span class="line"></span><br><span class="line"># 1、第一行必须指定 基础镜像信息</span><br><span class="line">FROM ubuntu</span><br><span class="line"></span><br><span class="line"># 2、维护者信息</span><br><span class="line">MAINTAINER docker_user docker_user@email.com</span><br><span class="line"></span><br><span class="line"># 3、镜像操作指令</span><br><span class="line">RUN echo &quot;deb http://archive.ubuntu.com/ubuntu/ raring main universe&quot; &gt;&gt; /etc/apt/sources.list</span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y nginx</span><br><span class="line">RUN echo &quot;\ndaemon off;&quot; &gt;&gt; /etc/nginx/nginx.conf</span><br><span class="line"></span><br><span class="line"># 4、容器启动执行指令</span><br><span class="line">CMD /usr/sbin/nginx</span><br></pre></td></tr></table></figure>
+<h2 id="Dcokerfile文件格式"><a href="#Dcokerfile文件格式" class="headerlink" title="Dcokerfile文件格式"></a>Dcokerfile文件格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">##  Dockerfile文件格式</span><br><span class="line"></span><br><span class="line"># This dockerfile uses the ubuntu image</span><br><span class="line"># VERSION 2 - EDITION 1</span><br><span class="line"># Author: docker_user</span><br><span class="line"># Command format: Instruction [arguments / command] ..</span><br><span class="line"></span><br><span class="line"># 1、第一行必须指定 基础镜像信息</span><br><span class="line">FROM ubuntu</span><br><span class="line"></span><br><span class="line">ps: 除了选择现有镜像为基础镜像外，Docker 还存在一个特殊的镜像，名为 scratch。这个镜像是虚拟的概念，并不实际存在，它表示一个空白的镜像</span><br><span class="line">FROM scratch</span><br><span class="line"></span><br><span class="line"># 2、维护者信息</span><br><span class="line">MAINTAINER docker_user docker_user@email.com</span><br><span class="line"></span><br><span class="line"># 3、镜像操作指令</span><br><span class="line">RUN echo &quot;deb http://archive.ubuntu.com/ubuntu/ raring main universe&quot; &gt;&gt; /etc/apt/sources.list</span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y nginx</span><br><span class="line">RUN echo &quot;\ndaemon off;&quot; &gt;&gt; /etc/nginx/nginx.conf</span><br><span class="line"></span><br><span class="line"># 4、容器启动执行指令</span><br><span class="line">CMD /usr/sbin/nginx</span><br></pre></td></tr></table></figure>
 <h2 id="Dcokerfile指令详解"><a href="#Dcokerfile指令详解" class="headerlink" title="Dcokerfile指令详解"></a>Dcokerfile指令详解</h2><h3 id="FROM-指定基础镜像"><a href="#FROM-指定基础镜像" class="headerlink" title="FROM:指定基础镜像"></a>FROM:指定基础镜像</h3><p>FROM 指令用于指定其后构建新镜像所使用的基础镜像。FROM 指令必是 Dockerfile 文件中的首条命令，启动构建流程后，Docker 将会基于该镜像构建新镜像，FROM 后的命令也会基于这个基础镜像。</p>
 <p>FROM语法格式为：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM &lt;image&gt;</span><br><span class="line">或者</span><br><span class="line">FROM &lt;image&gt;:&lt;tag&gt;</span><br><span class="line">或者</span><br><span class="line">FROM &lt;image&gt;:&lt;digest&gt;</span><br></pre></td></tr></table></figure>
