@@ -5,16 +5,33 @@ categories: Docker
 copyright : ture
 ---
 
+> Docker是这间博客的第一个系列，有很多内容都引用到了各个大神的内容。我会在这个系列发布的某一个时间点单独发表文章针对各个大神的感谢以及博文出处，在此专题系列的各个文章就不再赘述引用了。希望大神们能够理解。
+
+
 ![Docker](http://p95stksgt.bkt.clouddn.com/docker01.png)
 
 ---
 
 # docker
 
+- 用于获取容器/镜像的元数据
+
+```
+docker inspect
+
+```
+
 - 查看当前系统Docker信息:
 
 ```
 docker info
+
+```
+
+- 查看当前容器使用了多少资源:
+
+```
+docker stats <containerID>
 
 ```
 
@@ -29,7 +46,7 @@ docker search [image_name]
 
 ```
 
-- 拉取docker镜像
+- 拉取docker镜像并启动
 
 ```
 docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
@@ -53,14 +70,6 @@ options:
 
 
 ```
-
-- 启动镜像
-
-```
-docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
-
-```
-
 
 - 查看宿主机上的镜像，Docker镜像保存在/var/lib/docker目录下:
 
