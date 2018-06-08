@@ -143,6 +143,8 @@ docker container kill [containerID]
 - 启动、停止、重启容器命令：
 
 ```
+docker run  --name [自己定义的容器名称]  -d -p [本机端口号]:[容器端口号] [image_name]:[tag]
+
 docker start [container_name]/[container_id]
 docker stop [container_name]/[container_id]
 docker restart [container_name]/[container_id]
@@ -157,6 +159,10 @@ docker attach [container_name]/[container_id]
 或者
 
 docker container exec -it [containerID] /bin/bash （进入一个正在运行的 docker 容器。如果docker run命令运行容器的时候，没有使用-it参数，就要用这个命令进入容器。一旦进入了容器，就可以在容器的 Shell 执行命令了。）
+
+或者
+
+docker exec -it [自己命名的容器名称] bash
 
 ```
 
