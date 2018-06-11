@@ -39,6 +39,9 @@ Dockerfile 是一个文本文件，其内包含了一条条的指令(Instruction
 # 1、第一行必须指定 基础镜像信息
 FROM ubuntu
 
+ps: 除了选择现有镜像为基础镜像外，Docker 还存在一个特殊的镜像，名为 scratch。这个镜像是虚拟的概念，并不实际存在，它表示一个空白的镜像
+FROM scratch
+
 # 2、维护者信息
 MAINTAINER docker_user docker_user@email.com
 
