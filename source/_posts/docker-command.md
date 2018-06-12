@@ -180,6 +180,8 @@ docker exec -it [自己命名的容器名称] bash
 ```
 docker rm [container_name]/[container_id]
 
+-v : 删除容器的同时，删除数据卷
+
 ```
 
 - 删除所有停止的容器：
