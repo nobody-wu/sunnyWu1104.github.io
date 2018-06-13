@@ -261,6 +261,18 @@ docker-machine ssh [主机名]
 
 连接到主机之后你就可以在其上使用 Docker 了，退出虚拟机使用命令：exit 
 
+### 在远程主机上安装 Docker
+
+前提条件：ssh证书登录已打通
+
+```
+$ docker-machine create -d generic \
+    --generic-ip-address=xxx.xxx.xxx.xxx \
+    --generic-ssh-user=nick \
+    --generic-ssh-key ~/.ssh/id_rsa \
+    krdevdb
+```
+
 ## Docker Machine 常用命令
 
 //创建虚拟机
