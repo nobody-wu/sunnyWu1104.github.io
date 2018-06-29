@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/cornelius.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/cornelius.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/cornelius.jpeg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Cornelius's Notes" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Docker Componse吸引我学习Docker，Machine令我爱上Docker，一定不要错过这两个伟大的项目。严肃脸:)  Docker Machine 介绍Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境。 Docker Machine 是一个工具，它允许你在虚拟宿主机上安装 Docker">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker三剑客之Machine项目">
+<meta property="og:url" content="https://sunnyWu1104.github.io/2018/06/28/docker-machine/index.html">
+<meta property="og:site_name" content="Cornelius&#39;s Notes">
+<meta property="og:description" content="Docker Componse吸引我学习Docker，Machine令我爱上Docker，一定不要错过这两个伟大的项目。严肃脸:)  Docker Machine 介绍Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境。 Docker Machine 是一个工具，它允许你在虚拟宿主机上安装 Docker">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p95stksgt.bkt.clouddn.com/docker02.png">
+<meta property="og:image" content="http://p95stksgt.bkt.clouddn.com/docker-machine01.jpg">
+<meta property="og:image" content="http://p95stksgt.bkt.clouddn.com/docker-machine02.jpg">
+<meta property="og:updated_time" content="2018-06-28T08:39:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker三剑客之Machine项目">
+<meta name="twitter:description" content="Docker Componse吸引我学习Docker，Machine令我爱上Docker，一定不要错过这两个伟大的项目。严肃脸:)  Docker Machine 介绍Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境。 Docker Machine 是一个工具，它允许你在虚拟宿主机上安装 Docker">
+<meta name="twitter:image" content="http://p95stksgt.bkt.clouddn.com/docker02.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sunnyWu1104.github.io/2018/06/28/docker-machine/"/>
+
+
+
+
+
+  <title>Docker三剑客之Machine项目 | Cornelius's Notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband">
+      <a href="https://github.com/sunnyWu1104/" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    </div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cornelius's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sunnyWu1104.github.io/2018/06/28/docker-machine/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cornelius">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cornelius.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cornelius's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker三剑客之Machine项目</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-28T16:39:42+08:00">
+                2018-06-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,515
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://p95stksgt.bkt.clouddn.com/docker02.png" alt="Docker"></p>
+<hr>
+<blockquote>
+<p>Docker Componse吸引我学习Docker，Machine令我爱上Docker，一定不要错过这两个伟大的项目。严肃脸:)</p>
+</blockquote>
+<h2 id="Docker-Machine-介绍"><a href="#Docker-Machine-介绍" class="headerlink" title="Docker Machine 介绍"></a>Docker Machine 介绍</h2><p>Docker Machine 是 Docker 官方编排（Orchestration）项目之一，负责在多种平台上快速安装 Docker 环境。</p>
+<p>Docker Machine 是一个工具，它允许你在虚拟宿主机上安装 Docker Engine ，并使用 docker-machine 命令管理这些宿主机。你可以使用 Machine 在你本地的 Mac 或 Windows box、公司网络、数据中心、或像 AWS 或 Digital Ocean 这样的云提供商上创建 Docker 宿主机。（跨平台，跨环境）</p>
+<p>使用 docker-machine 命令，你可以启动、审查、停止和重新启动托管的宿主机、升级 Docker 客户端和守护程序、并配置 Docker 客户端与你的宿主机通信。（集中管理）</p>
+<blockquote>
+<p>Docker Machine 项目基于 Go 语言实现（习惯面向对象的同学，学习go的基础语法，不超过一周），目前在 <a href="https://github.com/docker/machine" target="_blank" rel="noopener">Github</a> 上进行维护。</p>
+</blockquote>
+<h3 id="为什么要使用它？"><a href="#为什么要使用它？" class="headerlink" title="为什么要使用它？"></a>为什么要使用它？</h3><ol>
+<li>跨平台跨环境运行Docker</li>
+</ol>
+<p>Machine 允许你在较早的 Mac 或 Windows 系统上运行 Docker</p>
+<p><img src="http://p95stksgt.bkt.clouddn.com/docker-machine01.jpg" alt="docker-machine01"></p>
+<p>如果你主要在不符合新的 Docker for Mac 和 Docker for Windows 应用程序的旧 Mac 或 Windows 笔记本电脑或台式机上工作，则需要 Docker Machine 来在本地“运行Docker”（即Docker Engine）。在 Mac 或 Windows box 中使用 Docker Toolbox 安装程序安装 Docker Machine 将为 Docker Engine 配置一个本地的虚拟机，使你能够连接它、并运行 docker 命令。</p>
+<ol start="2">
+<li>远程系统集中配置Docker宿主机</li>
+</ol>
+<p><img src="http://p95stksgt.bkt.clouddn.com/docker-machine02.jpg" alt="docker-machine02"></p>
+<p>Docker Engine Linux 系统上原生地运行。如果你有一个 Linux 作为你的主系统，并且想要运行 docker 命令，所有你需要做的就是下载并安装 Docker Engine 。然而，如果你想要在网络上、云中甚至本地配置多个 Docker 宿主机有一个有效的方式，你需要 Docker Machine。</p>
+<p>无论你的主系统是 Mac、Windows 还是 Linux，你都可以在其上安装 Docker Machine，并使用 docker-machine 命令来配置和管理大量的 Docker 宿主机。它会自动创建宿主机、在其上安装 Docker Engine 、然后配置 docker 客户端。每个被管理的宿主机（“machine”）是 Docker 宿主机和配置好的客户端的结合。</p>
+<h3 id="Docker-Engine-和-Docker-Machine-有什么区别？"><a href="#Docker-Engine-和-Docker-Machine-有什么区别？" class="headerlink" title="Docker Engine 和 Docker Machine 有什么区别？"></a>Docker Engine 和 Docker Machine 有什么区别？</h3><p>首先，Docker Engine与Docker Machine都有自己的命令行客户端。但是Docker Machine 是一个用于配置和管理你的宿主机（上面具有 Docker Engine 的主机）的工具，可以使用Docker Machine在一个或多个虚拟系统上安装Docker Engine。</p>
+<p>这些虚拟系统可以是本地的（就像你在 Mac 或 Windows 上使用 Machine 在 VirtualBox 中安装和运行 Docker Engine 一样）或远程的（就像你使用 Machine 在云提供商上 provision Dockerized 宿主机一样）。Dockerized 宿主机本身可以认为是，且有时就称为，被管理的“machines”。</p>
+<p>eg:</p>
+<ul>
+<li>本地系统安装Docker Machine</li>
+<li>利用Docker Machine创建虚拟机</li>
+<li>在虚拟机上就可以玩耍运行 Docker Engine</li>
+</ul>
+<h2 id="安装Docker-Machine"><a href="#安装Docker-Machine" class="headerlink" title="安装Docker Machine"></a>安装Docker Machine</h2><p><a href="https://github.com/docker/machine/releases" target="_blank" rel="noopener">docker-machine-release</a></p>
+<p>On Linux:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ curl -L https://github.com/docker/machine/releases/download/v0.14.0/docker-machine-`uname -s`-`uname -m` &gt;/tmp/docker-machine &amp;&amp;</span><br><span class="line">    chmod +x /tmp/docker-machine &amp;&amp;</span><br><span class="line">    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine</span><br></pre></td></tr></table></figure></p>
+<p>On OS X:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -L https://github.com/docker/machine/releases/download/v0.14.0/docker-machine-`uname -s`-`uname -m` &gt;/usr/local/bin/docker-machine &amp;&amp; \</span><br><span class="line">  chmod +x /usr/local/bin/docker-machine</span><br></pre></td></tr></table></figure></p>
+<p>On Windows with git bash:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ if [[ ! -d &quot;$HOME/bin&quot; ]]; then mkdir -p &quot;$HOME/bin&quot;; fi &amp;&amp; \</span><br><span class="line">curl -L https://github.com/docker/machine/releases/download/v0.14.0/docker-machine-Windows-x86_64.exe &gt; &quot;$HOME/bin/docker-machine.exe&quot; &amp;&amp; \</span><br><span class="line">chmod +x &quot;$HOME/bin/docker-machine.exe&quot;</span><br></pre></td></tr></table></figure></p>
+<h2 id="使用Docker-Machine"><a href="#使用Docker-Machine" class="headerlink" title="使用Docker Machine"></a>使用Docker Machine</h2><p>Docker Machine 支持多种后端驱动，包括虚拟机、本地主机和云平台等。</p>
+<h3 id="创建本地主机实例-Virtualbox-驱动"><a href="#创建本地主机实例-Virtualbox-驱动" class="headerlink" title="创建本地主机实例:Virtualbox 驱动"></a>创建本地主机实例:Virtualbox 驱动</h3><h4 id="Linux-17-10安装VirtualBox"><a href="#Linux-17-10安装VirtualBox" class="headerlink" title="Linux 17.10安装VirtualBox"></a>Linux 17.10安装VirtualBox</h4><p>这里演示的是一个通过Docker Machine创建一个VirtualBox，但是想要创建VirtualBox，首先需要当前主机已经安装了virtualbox才可以继续。</p>
+<p>如果你使用Mac OS/Windows，那么很幸运，你只需要去VirtualBox的官网下载对应的包即可。如果使用的是Linux操作系统，那么会很麻烦。我这边展示一下使用Linux如果安装VirtualBox（毕竟，方便的事做了也没意思:)）</p>
+<p>我的操作系统版本：Linux 17.10</p>
+<ol>
+<li>Setup Apt Repository</li>
+</ol>
+<p>打开/etc/apt/source.list文件，添加以下代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">For Ubuntu 17.10 (&quot;artful&quot;)</span><br><span class="line">deb http://download.virtualbox.org/virtualbox/debian artful contrib</span><br><span class="line"></span><br><span class="line">For Ubuntu 17.04 (&quot;Zesty&quot;)</span><br><span class="line">deb http://download.virtualbox.org/virtualbox/debian zesty contrib</span><br><span class="line"></span><br><span class="line">For Ubuntu 16.04 (&quot;Xenial&quot;)</span><br><span class="line">deb http://download.virtualbox.org/virtualbox/debian xenial contrib</span><br><span class="line"></span><br><span class="line">For Ubuntu 14.04 (&quot;Trusty&quot;)</span><br><span class="line">deb http://download.virtualbox.org/virtualbox/debian trusty contrib</span><br><span class="line"></span><br><span class="line">For Ubuntu 12.04 LTS (&quot;Precise Pangolin&quot;)</span><br><span class="line">deb http://download.virtualbox.org/virtualbox/debian precise contrib</span><br><span class="line"></span><br><span class="line">For Debian 8 (&quot;Jessie&quot;)</span><br><span class="line">deb http://download.virtualbox.org/virtualbox/debian jessie contrib</span><br><span class="line"></span><br><span class="line">For Debian 7 (&quot;Wheezy&quot;)</span><br><span class="line">deb http://download.virtualbox.org/virtualbox/debian wheezy contrib</span><br></pre></td></tr></table></figure>
+<p>不知道名称的，出门左转<a href="http://download.virtualbox.org/virtualbox/debian/dists/" target="_blank" rel="noopener">virtualbox</a></p>
+<ol start="2">
+<li>Setup Oracle public key</li>
+</ol>
+<p>添加公钥使其信任</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -fsS https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -</span><br><span class="line">$ curl -fsS https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+<p>这一步和安装Docker时添加官方GPG密钥一致</p>
+<ol start="3">
+<li>Install Oracle VirtualBox</li>
+</ol>
+<p>愉快的安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install virtualbox-5.1</span><br></pre></td></tr></table></figure>
+<h4 id="创建一个虚拟机"><a href="#创建一个虚拟机" class="headerlink" title="创建一个虚拟机"></a>创建一个虚拟机</h4><p>安装完VirtualBox后，继续创建虚拟主机</p>
+<p>使用 virtualbox 类型的驱动，创建一台 Docker 主机，命名为 default。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine create --driver virtualbox default</span><br></pre></td></tr></table></figure>
+<p>也可以在创建时加上如下参数，来配置主机或者主机上的 Docker:</p>
+<ul>
+<li>–engine-opt dns=114.114.114.114 配置 Docker 的默认 DNS</li>
+<li>–engine-registry-mirror <a href="https://registry.docker-cn.com" target="_blank" rel="noopener">https://registry.docker-cn.com</a> 配置 Docker 的仓库镜像</li>
+<li>–virtualbox-memory 2048 配置主机内存</li>
+<li>–virtualbox-cpu-count 2 配置主机 CPU</li>
+</ul>
+<p>ps:</p>
+<p>前一天刚实验完，可以创建在虚拟机内安装并虚拟机，但是今天却再次创建虚拟机的时候就报错:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This computer doesn&apos;t have VT-X/AMD-v enabled. Enabling it in the BIOS is mandatory</span><br></pre></td></tr></table></figure>
+<p>这表示系统没有开启Intel Virtualization Technology，可是我偏偏该死的用的Virtualbox，这个虚拟机只有EFI(虽然类似bios，但是少了很多选项)并没有bios，试着半天没有办法继续下去。（命令行直接修改没有试过行不行，应该是不行的）</p>
+<p>后来google告诉我虚拟机内是不支持虚拟机的虚拟化。。。要这么说的话，云服务器&amp;云主机&amp;虚拟主机通过虚拟化手段的主机都不能用了。难道我昨天活在梦里了？？？</p>
+<p>这里就不再继续演示virtualbox的驱动了，大家可以找别的玩玩</p>
+<pre><code>•    amazonec2
+•    azure
+•    digitalocean
+•    exoscale
+•    generic
+•    google
+•    hyperv
+•    none
+•    openstack
+•    rackspace
+•    softlayer
+•    virtualbox
+•    vmwarevcloudair
+•    vmwarefusion
+•    vmwarevsphere
+</code></pre><h3 id="创建本地主机实例-macOS-xhyve-驱动"><a href="#创建本地主机实例-macOS-xhyve-驱动" class="headerlink" title="创建本地主机实例:macOS xhyve 驱动"></a>创建本地主机实例:macOS xhyve 驱动</h3><p><a href="https://github.com/zchee/docker-machine-driver-xhyve" target="_blank" rel="noopener">xhyve 驱动</a></p>
+<p>xhyve 是 macOS 上轻量化的虚拟引擎，使用其创建的 Docker Machine 较 VirtualBox 驱动创建的运行效率要高。</p>
+<p>表示没用过，做下记录。有需要的同学可以尝试一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ brew install docker-machine-driver-xhyve</span><br><span class="line"></span><br><span class="line">$ docker-machine create \</span><br><span class="line">      -d xhyve \</span><br><span class="line">      # --xhyve-boot2docker-url ~/.docker/machine/cache/boot2docker.iso \</span><br><span class="line">      --engine-opt dns=114.114.114.114 \</span><br><span class="line">      --engine-registry-mirror https://registry.docker-cn.com \</span><br><span class="line">      --xhyve-memory-size 2048 \</span><br><span class="line">      --xhyve-rawdisk \</span><br><span class="line">      --xhyve-cpu-count 2 \</span><br><span class="line">      xhyve</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：非首次创建时建议加上 –xhyve-boot2docker-url ~/.docker/machine/cache/boot2docker.iso 参数，避免每次创建时都从 GitHub 下载 ISO 镜像。</p>
+</blockquote>
+<h3 id="创建本地主机实例-Windows-10"><a href="#创建本地主机实例-Windows-10" class="headerlink" title="创建本地主机实例:Windows 10"></a>创建本地主机实例:Windows 10</h3><p>Windows 10 安装 Docker for Windows 之后不能再安装 VirtualBox，也就不能使用 virtualbox 驱动来创建 Docker Machine，我们可以选择使用 hyperv 驱动。</p>
+<blockquote>
+<p>注意，必须事先在 Hyper-V 管理器中新建一个 外部虚拟交换机 执行下面的命令时，使用 –hyperv-virtual-switch=MY_SWITCH 指定虚拟交换机名称</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine create --driver hyperv --hyperv-virtual-switch=MY_SWITCH vm</span><br></pre></td></tr></table></figure>
+<h3 id="创建一个主机"><a href="#创建一个主机" class="headerlink" title="创建一个主机"></a>创建一个主机</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine create --driver virtualbox default</span><br></pre></td></tr></table></figure>
+<p>这个命令会下载 boot2docker，基于 boot2docker 创建一个虚拟主机。boot2docker 是一个轻量级的 linux 发行版，基于专门为运行 docker 容器而设计的 Tiny Core Linux 系统，完全从 RAM 运行，45Mb左右，启动时间约5s。</p>
+<p>服务列表:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ls</span><br></pre></td></tr></table></figure>
+<p>创建主机成功后，可以通过 env 命令来让后续操作对象都是目标主机。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine env [主机名]</span><br></pre></td></tr></table></figure>
+<p>可以通过 SSH 登录到主机:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ssh [主机名]</span><br></pre></td></tr></table></figure>
+<p>连接到主机之后你就可以在其上使用 Docker 了，退出虚拟机使用命令：exit </p>
+<h3 id="在远程主机上安装-Docker"><a href="#在远程主机上安装-Docker" class="headerlink" title="在远程主机上安装 Docker"></a>在远程主机上安装 Docker</h3><p>前提条件：ssh证书登录已打通</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ docker-machine create -d generic \</span><br><span class="line">    --generic-ip-address=xxx.xxx.xxx.xxx \</span><br><span class="line">    --generic-ssh-user=nick \</span><br><span class="line">    --generic-ssh-key ~/.ssh/id_rsa \</span><br><span class="line">    krdevdb</span><br></pre></td></tr></table></figure>
+<h2 id="Docker-Machine-常用命令"><a href="#Docker-Machine-常用命令" class="headerlink" title="Docker Machine 常用命令"></a>Docker Machine 常用命令</h2><p>//创建虚拟机<br>docker-machine create [OPTIONS] [arg…]</p>
+<p>//移除虚拟机<br>docker-machine rm [OPTIONS] [arg…]</p>
+<p>//登录虚拟机<br>docker-machine ssh [arg…]</p>
+<p>//docker客户端配置环境变量<br>docker-machine env [OPTIONS] [arg…]</p>
+<p>//检查机子信息<br>docker-machine inspect</p>
+<p>//查看虚拟机列表<br>docker-machine ls [OPTIONS] [arg…]</p>
+<p>//查看虚拟机状态<br>docker-machine status [arg…]  //一个虚拟机名称</p>
+<p>//启动虚拟机<br>docker-machine start [arg…]  //一个或多个虚拟机名称</p>
+<p>//停止虚拟机<br>docker-machine stop [arg…]  //一个或多个虚拟机名称</p>
+<p>//重启虚拟机<br>docker-machine restart [arg…]  //一个或多个虚拟机名称</p>
+<h2 id="更多命令"><a href="#更多命令" class="headerlink" title="更多命令"></a>更多命令</h2><pre><code>•    active 查看活跃的 Docker 主机
+•    config 输出连接的配置信息
+•    create 创建一个 Docker 主机
+•    env 显示连接到某个主机需要的环境变量
+•    inspect 输出主机更多信息
+•    ip 获取主机地址
+•    kill 停止某个主机
+•    ls 列出所有管理的主机
+•    provision 重新设置一个已存在的主机
+•    regenerate-certs 为某个主机重新生成 TLS 认证信息
+•    restart 重启主机
+•    rm 删除某台主机
+•    ssh SSH 到主机上执行命令
+•    scp 在主机之间复制文件
+•    mount 挂载主机目录到本地
+•    start 启动一个主机
+•    status 查看主机状态
+•    stop 停止一个主机
+•    upgrade 更新主机 Docker 版本为最新
+•    url 获取主机的 URL
+•    version 输出 docker-machine 版本信息
+•    help 输出帮助信息
+</code></pre><p>每个命令，又带有不同的参数，可以通过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker-machine COMMAND --help</span><br></pre></td></tr></table></figure>
+<p>来查看具体的用法。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+          
+            
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/06/28/docker-machine/">Docker三剑客之Machine项目</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 Cornelius 的个人博客">Cornelius</a></p>
+  <p><span>发布时间:</span>2018年06月28日 - 16:06</p>
+  <p><span>最后更新:</span>2018年06月28日 - 16:06</p>
+  <p><span>原始链接:</span><a href="/2018/06/28/docker-machine/" title="Docker三剑客之Machine项目">https://sunnyWu1104.github.io/2018/06/28/docker-machine/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://sunnyWu1104.github.io/2018/06/28/docker-machine/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
+</div>
+<script>
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({
+          title: "",
+          text: '复制成功',
+          icon: "success",
+          showConfirmButton: true
+          });
+    });
+    });
+</script>
+
+
+          
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Cornelius 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Cornelius 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/28/nginx-command/" rel="next" title="【Nginx】root和alias指令区别小记">
+                <i class="fa fa-chevron-left"></i> 【Nginx】root和alias指令区别小记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/28/GFW-SS&SSR/" rel="prev" title="【SS/SSR】GFW与SS/SSR">
+                【SS/SSR】GFW与SS/SSR <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cornelius.jpeg"
+                alt="Cornelius" />
+            
+              <p class="site-author-name" itemprop="name">Cornelius</p>
+              <p class="site-description motion-element" itemprop="description">种颗草也算是环保卫士</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sunnyWu1104" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wujiapengxp1104@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://example.com/" title="Title" target="_blank">Title</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Machine-介绍"><span class="nav-number">1.</span> <span class="nav-text">Docker Machine 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用它？"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要使用它？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Engine-和-Docker-Machine-有什么区别？"><span class="nav-number">1.2.</span> <span class="nav-text">Docker Engine 和 Docker Machine 有什么区别？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Docker-Machine"><span class="nav-number">2.</span> <span class="nav-text">安装Docker Machine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Docker-Machine"><span class="nav-number">3.</span> <span class="nav-text">使用Docker Machine</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建本地主机实例-Virtualbox-驱动"><span class="nav-number">3.1.</span> <span class="nav-text">创建本地主机实例:Virtualbox 驱动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux-17-10安装VirtualBox"><span class="nav-number">3.1.1.</span> <span class="nav-text">Linux 17.10安装VirtualBox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建一个虚拟机"><span class="nav-number">3.1.2.</span> <span class="nav-text">创建一个虚拟机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建本地主机实例-macOS-xhyve-驱动"><span class="nav-number">3.2.</span> <span class="nav-text">创建本地主机实例:macOS xhyve 驱动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建本地主机实例-Windows-10"><span class="nav-number">3.3.</span> <span class="nav-text">创建本地主机实例:Windows 10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个主机"><span class="nav-number">3.4.</span> <span class="nav-text">创建一个主机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在远程主机上安装-Docker"><span class="nav-number">3.5.</span> <span class="nav-text">在远程主机上安装 Docker</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Machine-常用命令"><span class="nav-number">4.</span> <span class="nav-text">Docker Machine 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更多命令"><span class="nav-number">5.</span> <span class="nav-text">更多命令</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cornelius</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">16.4k</span>
+  
+</div>
+
+<div class="powered-by">
+  <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+    本站访客数:<span id="busuanzi_value_site_uv"></span><span class="post-meta-divider">|</span>
+  </span>
+  </div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+<span class="post-meta-divider">|</span>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共16.4k字</span>
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

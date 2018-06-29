@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/cornelius.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/cornelius.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/cornelius.jpeg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Docker," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Cornelius's Notes" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Docker Machine让我们更便捷的添加处理主机，Docker Swarm让我们更加方便的管理主机  为什么存在Swarm项目Docker Swarm 是 Docker 官方三剑客项目之一，提供 Docker 容器集群服务，是 Docker 官方对容器云生态进行支持的核心方案。 使用它，用户可以将多个 Docker 主机封装为单个大型的虚拟 Docker 主机，快速打造一套容器云平台。">
+<meta name="keywords" content="Docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker三剑客之Swarm项目">
+<meta property="og:url" content="https://sunnyWu1104.github.io/2018/06/28/docker-swarm/index.html">
+<meta property="og:site_name" content="Cornelius&#39;s Notes">
+<meta property="og:description" content="Docker Machine让我们更便捷的添加处理主机，Docker Swarm让我们更加方便的管理主机  为什么存在Swarm项目Docker Swarm 是 Docker 官方三剑客项目之一，提供 Docker 容器集群服务，是 Docker 官方对容器云生态进行支持的核心方案。 使用它，用户可以将多个 Docker 主机封装为单个大型的虚拟 Docker 主机，快速打造一套容器云平台。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://p95stksgt.bkt.clouddn.com/docker-swarm01.jpg">
+<meta property="og:image" content="http://p95stksgt.bkt.clouddn.com/docker-swarm02.jpg">
+<meta property="og:image" content="http://p95stksgt.bkt.clouddn.com/docker-swarm03.png">
+<meta property="og:updated_time" content="2018-06-28T09:33:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker三剑客之Swarm项目">
+<meta name="twitter:description" content="Docker Machine让我们更便捷的添加处理主机，Docker Swarm让我们更加方便的管理主机  为什么存在Swarm项目Docker Swarm 是 Docker 官方三剑客项目之一，提供 Docker 容器集群服务，是 Docker 官方对容器云生态进行支持的核心方案。 使用它，用户可以将多个 Docker 主机封装为单个大型的虚拟 Docker 主机，快速打造一套容器云平台。">
+<meta name="twitter:image" content="http://p95stksgt.bkt.clouddn.com/docker-swarm01.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sunnyWu1104.github.io/2018/06/28/docker-swarm/"/>
+
+
+
+
+
+  <title>Docker三剑客之Swarm项目 | Cornelius's Notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband">
+      <a href="https://github.com/sunnyWu1104/" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    </div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Cornelius's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sunnyWu1104.github.io/2018/06/28/docker-swarm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cornelius">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/cornelius.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cornelius's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Docker三剑客之Swarm项目</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-28T17:02:52+08:00">
+                2018-06-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index">
+                    <span itemprop="name">Docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,813
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>Docker Machine让我们更便捷的添加处理主机，Docker Swarm让我们更加方便的管理主机</p>
+</blockquote>
+<h2 id="为什么存在Swarm项目"><a href="#为什么存在Swarm项目" class="headerlink" title="为什么存在Swarm项目"></a>为什么存在Swarm项目</h2><p>Docker Swarm 是 Docker 官方三剑客项目之一，提供 Docker 容器集群服务，是 Docker 官方对容器云生态进行支持的核心方案。</p>
+<p>使用它，用户可以将多个 Docker 主机封装为单个大型的虚拟 Docker 主机，快速打造一套容器云平台。</p>
+<blockquote>
+<p>注意：Docker 1.12 Swarm mode 已经内嵌入 Docker 引擎，成为了 docker 子命令 docker swarm。请注意与旧的 Docker Swarm 区分开来。</p>
+</blockquote>
+<p>Swarm mode 内置 kv 存储功能，提供了众多的新特性，比如：具有容错能力的去中心化设计、内置服务发现、负载均衡、路由网格、动态伸缩、滚动更新、安全传输等。使得 Docker 原生的 Swarm 集群具备与 Mesos、Kubernetes 竞争的实力。</p>
+<h2 id="Docker-Swarm的基本概念"><a href="#Docker-Swarm的基本概念" class="headerlink" title="Docker Swarm的基本概念"></a>Docker Swarm的基本概念</h2><p>Swarm 是使用 SwarmKit 构建的 Docker 引擎内置（原生）的集群管理和编排工具。</p>
+<h3 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h3><p>运行 Docker 的主机可以主动初始化一个 Swarm 集群或者加入一个已存在的 Swarm 集群，这样这个运行 Docker 的主机就成为一个 Swarm 集群的节点 (node) 。</p>
+<p><strong>节点分为管理 (manager) 节点和工作 (worker) 节点。</strong></p>
+<p>管理节点用于 Swarm 集群的管理，docker swarm 命令基本只能在管理节点执行（节点退出集群命令 docker swarm leave 可以在工作节点执行）。一个 Swarm 集群可以有多个管理节点，但只有一个管理节点可以成为 leader，leader 通过 raft 协议实现。</p>
+<p>工作节点是任务执行节点，管理节点将服务 (service) 下发至工作节点执行。管理节点默认也作为工作节点。你也可以通过配置让服务只运行在管理节点。</p>
+<p><img src="http://p95stksgt.bkt.clouddn.com/docker-swarm01.jpg" alt="docker-swarm01"></p>
+<h3 id="服务和任务"><a href="#服务和任务" class="headerlink" title="服务和任务"></a>服务和任务</h3><p>任务 （Task）是 Swarm 中的最小的调度单位，目前来说就是一个单一的容器。</p>
+<p>服务 （Services） 是指一组任务的集合，服务定义了任务的属性。</p>
+<p>服务有两种模式：</p>
+<ul>
+<li><p>replicated services 按照一定规则在各个工作节点上运行指定个数的任务。</p>
+</li>
+<li><p>global services 每个工作节点上运行一个任务</p>
+</li>
+</ul>
+<p>两种模式通过 docker service create 的 –mode 参数指定。</p>
+<p><img src="http://p95stksgt.bkt.clouddn.com/docker-swarm02.jpg" alt="docker-swarm02"></p>
+<h2 id="创建Swarm集群"><a href="#创建Swarm集群" class="headerlink" title="创建Swarm集群"></a>创建Swarm集群</h2><h3 id="初始化集群"><a href="#初始化集群" class="headerlink" title="初始化集群"></a>初始化集群</h3><h4 id="使用-virtualbox-创建管理节点"><a href="#使用-virtualbox-创建管理节点" class="headerlink" title="使用 virtualbox 创建管理节点"></a>使用 virtualbox 创建管理节点</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker-machine create --driver virtualbox manager1</span><br><span class="line">#进入管理节点</span><br><span class="line">docker-machine ssh manager1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>执行 sudo -i 可以进入Root 权限</p>
+</blockquote>
+<p>使用 docker swarm init 在 manager1 初始化一个 Swarm 集群</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker@manager1:~$ docker swarm init --advertise-addr 192.168.99.100</span><br></pre></td></tr></table></figure>
+<p>如果你的 Docker 主机有多个网卡，拥有多个 IP，必须使用 –advertise-addr 指定 IP。 执行 docker swarm init 命令的节点自动成为管理节点。</p>
+<p>命令 docker info 可以查看 swarm 集群状态:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Containers: 0</span><br><span class="line">Running: 0</span><br><span class="line">Paused: 0</span><br><span class="line">Stopped: 0</span><br><span class="line">  ...snip...</span><br><span class="line">Swarm: active</span><br><span class="line">  NodeID: dxn1zf6l61qsb1josjja83ngz</span><br><span class="line">  Is Manager: true</span><br><span class="line">  Managers: 1</span><br><span class="line">  Nodes: 1</span><br><span class="line">  ...snip...</span><br></pre></td></tr></table></figure>
+<p>命令 docker node ls 可以查看集群节点信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker@manager1:~$ docker node ls</span><br></pre></td></tr></table></figure>
+<p>退出manager1虚拟主机</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker@manager1:~$ exit</span><br></pre></td></tr></table></figure>
+<h4 id="增加工作节点"><a href="#增加工作节点" class="headerlink" title="增加工作节点"></a>增加工作节点</h4><p>上一步初始化了一个 Swarm 集群，拥有了一个管理节点，在 Docker Machine 一节中我们了解到 Docker Machine 可以在数秒内创建一个虚拟的 Docker 主机，下面我们使用它来创建两个 Docker 主机，并加入到集群中。</p>
+<ul>
+<li>创建虚拟主机 worker1</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine create -d virtualbox worker1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>进入虚拟主机 worker1</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ssh worker1</span><br></pre></td></tr></table></figure>
+<ul>
+<li>加入 swarm 集群</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker@worker1:~$ docker swarm join \</span><br><span class="line">    --token SWMTKN-1-47z6jld2o465z30dl7pie2kqe4oyug4fxdtbgkfjqgybsy4esl-8r55lxhxs7ozfil45gedd5b8a \</span><br><span class="line">    192.168.99.100:2377</span><br></pre></td></tr></table></figure>
+<ul>
+<li>退出虚拟主机</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker@worker1:~$ exit</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建虚拟主机 worker2 步骤同上1～4</li>
+</ul>
+<p>两个工作节点添加完成。</p>
+<h4 id="查看集群"><a href="#查看集群" class="headerlink" title="查看集群"></a>查看集群</h4><p>进入管理节点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ssh manager1</span><br></pre></td></tr></table></figure>
+<p>宿主机子上查看虚拟主机:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ls</span><br></pre></td></tr></table></figure>
+<p>在主节点上面执行 docker node ls 查询集群主机信息:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker node ls</span><br></pre></td></tr></table></figure>
+<p>到此集群便创建成功了！</p>
+<h2 id="部署服务"><a href="#部署服务" class="headerlink" title="部署服务"></a>部署服务</h2><p>使用 docker service 命令来管理 Swarm 集群中的服务，该命令只能在管理节点运行。</p>
+<h3 id="新建服务"><a href="#新建服务" class="headerlink" title="新建服务"></a>新建服务</h3><p>进入集群管理节点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ssh manager1</span><br></pre></td></tr></table></figure>
+<p>使用 docker 中国镜像:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker search alpine</span><br><span class="line">docker pull registry.docker-cn.com/library/alpine</span><br></pre></td></tr></table></figure>
+<p>在上一节创建的 Swarm 集群中运行一个名为 helloworld 服务:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">docker service create --replicas 1 --name helloworld alpine ping baidu.com</span><br><span class="line"></span><br><span class="line">rwpw7eij4v6h6716jvqvpxbyv</span><br><span class="line">overall progress: 1 out of 1 tasks</span><br><span class="line">1/1: running   [==================================================&gt;]</span><br><span class="line">verify: Service converged</span><br></pre></td></tr></table></figure>
+<p>命令解释：</p>
+<ul>
+<li>docker service create 命令创建一个服务</li>
+<li>–name 服务名称命名为 helloworld</li>
+<li>–replicas 设置启动的示例数</li>
+<li>alpine 指的是使用的镜像名称，ping ityouknow.com指的是容器运行的bash</li>
+</ul>
+<p>使用命令 docker service ps rwpw7eij4v6h6716jvqvpxbyv 可以查看服务进展</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker service ps rwpw7eij4v6h6716jvqvpxbyv</span><br><span class="line"></span><br><span class="line">ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE                ERROR               PORTS</span><br><span class="line">rgroe3s9qa53        helloworld.1        alpine:latest       worker1            Running             Running about a minute ago</span><br></pre></td></tr></table></figure>
+<p>使用 docker service ls 来查看当前 Swarm 集群运行的服务:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> docker service ls</span><br><span class="line">ID                  NAME                MODE                REPLICAS            IMAGE               PORTS</span><br><span class="line">yzfmyggfky8c        helloworld          replicated          0/1                 alpine:latest</span><br></pre></td></tr></table></figure>
+<h3 id="监控集群状态"><a href="#监控集群状态" class="headerlink" title="监控集群状态"></a>监控集群状态</h3><p>登录管理节点 manager1:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ssh manager1</span><br></pre></td></tr></table></figure>
+<p>运行 docker service inspect –pretty <service-id> 查询服务概要状态，以 helloworld 服务为例：</service-id></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">运行 docker service inspect helloworld 查询服务详细信息</span><br><span class="line">docker service inspect --pretty helloworld</span><br><span class="line"></span><br><span class="line">ID:             rwpw7eij4v6h6716jvqvpxbyv</span><br><span class="line">Name:           helloworld</span><br><span class="line">Service Mode:   Replicated</span><br><span class="line"> Replicas:      1</span><br><span class="line">Placement:</span><br><span class="line">UpdateConfig:</span><br><span class="line"> Parallelism:   1</span><br><span class="line"> On failure:    pause</span><br><span class="line"> Monitoring Period: 5s</span><br><span class="line"> Max failure ratio: 0</span><br><span class="line"> ...</span><br><span class="line"> Rollback order:    stop-first</span><br><span class="line">ContainerSpec:</span><br><span class="line"> Image:         alpine:latest@sha256:7b848083f93822dd21b0a2f14a110bd99f6efb4b838d499df6d04a49d0debf8b</span><br><span class="line"> Args:          ping ityouknow.com</span><br><span class="line">Resources:</span><br><span class="line">Endpoint Mode:  vip</span><br></pre></td></tr></table></figure>
+<p>运行docker service ps <service-id>  查看那个节点正在运行服务:</service-id></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker service ps helloworld</span><br><span class="line"></span><br><span class="line">NAME                                    IMAGE   NODE     DESIRED STATE  LAST STATE</span><br><span class="line">helloworld.1.8p1vev3fq5zm0mi8g0as41w35  alpine  worker1  Running        Running 3 minutes</span><br></pre></td></tr></table></figure>
+<p>在工作节点查看任务的执行情况:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-machine ssh  worker1</span><br></pre></td></tr></table></figure>
+<p>在节点执行docker ps 查看容器的运行状态:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br><span class="line"></span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS               NAMES</span><br><span class="line">96bf5b1d8010        alpine:latest       &quot;ping ityouknow.com&quot;   4 minutes ago       Up 4 minutes</span><br></pre></td></tr></table></figure>
+<p>在 Swarm 集群中成功的运行了一个 helloworld 服务，根据命令可以看出在 worker1 节点上运行。</p>
+<h2 id="弹性伸缩实验"><a href="#弹性伸缩实验" class="headerlink" title="弹性伸缩实验"></a>弹性伸缩实验</h2><p>可以使用 docker service scale 对一个服务运行的容器数量进行伸缩。</p>
+<ul>
+<li>当业务处于高峰期时，我们需要扩展服务运行的容器数量:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker service scale nginx=5</span><br><span class="line"></span><br><span class="line">等同于</span><br><span class="line"></span><br><span class="line">docker service update --replicas 5 helloworld</span><br></pre></td></tr></table></figure>
+<ul>
+<li>当业务平稳时，我们需要减少服务运行的容器数量:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker service scale nginx=2</span><br><span class="line"></span><br><span class="line">等同于</span><br><span class="line"></span><br><span class="line">docker service update --replicas 2 helloworld</span><br></pre></td></tr></table></figure>
+<ul>
+<li>删除集群服务:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker service rm helloworld</span><br></pre></td></tr></table></figure>
+<ul>
+<li>调整集群大小:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1. 创建虚拟主机 worker3</span><br><span class="line"> docker-machine create -d virtualbox worker3</span><br><span class="line"></span><br><span class="line">2. 进入虚拟主机 worker3</span><br><span class="line"> docker-machine ssh worker3</span><br><span class="line"></span><br><span class="line">3. 加入swarm 集群</span><br><span class="line"> docker swarm join \</span><br><span class="line">    --token SWMTKN-1-47z6jld2o465z30dl7pie2kqe4oyug4fxdtbgkfjqgybsy4esl-8r55lxhxs7ozfil45gedd5b8a \</span><br><span class="line">    192.168.99.100:2377</span><br></pre></td></tr></table></figure>
+<p>这时进入manager主机查看node，看出集群节点多了 worker3。</p>
+<ul>
+<li>退出 Swarm 集群:</li>
+</ul>
+<p>进入对应的work主机后，执行:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker swarm leave</span><br></pre></td></tr></table></figure>
+<ul>
+<li>重新搭建命令</li>
+</ul>
+<p>使用 VirtualBox 做测试的时候，如果想重复实验可以将实验节点删掉再重来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//停止虚拟机</span><br><span class="line">docker-machine stop [arg...]  //一个或多个虚拟机名称</span><br><span class="line"></span><br><span class="line">docker-machine stop   manager1 worker1 worker2</span><br><span class="line"></span><br><span class="line">//移除虚拟机</span><br><span class="line">docker-machine rm [OPTIONS] [arg...]</span><br><span class="line"></span><br><span class="line">docker-machine rm manager1 worker1 worker2</span><br></pre></td></tr></table></figure>
+<p>停止、删除虚拟主机后，再重新创建即可。</p>
+<h2 id="在-Swarm-集群中使用-compose-文件"><a href="#在-Swarm-集群中使用-compose-文件" class="headerlink" title="在 Swarm 集群中使用 compose 文件"></a>在 Swarm 集群中使用 compose 文件</h2><p>之前使用 docker-compose.yml 来一次配置、启动多个容器，在 Swarm 集群中也可以使用 compose 文件 （docker-compose.yml） 来配置、启动多个服务。</p>
+<p>以在 Swarm 集群中部署 WordPress 为例进行说明:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  wordpress:</span><br><span class="line">    image: wordpress</span><br><span class="line">    ports:</span><br><span class="line">      - 80:80</span><br><span class="line">    networks:</span><br><span class="line">      - overlay</span><br><span class="line">    environment:</span><br><span class="line">      WORDPRESS_DB_HOST: db:3306</span><br><span class="line">      WORDPRESS_DB_USER: wordpress</span><br><span class="line">      WORDPRESS_DB_PASSWORD: wordpress</span><br><span class="line">    deploy:</span><br><span class="line">      mode: replicated</span><br><span class="line">      replicas: 3</span><br><span class="line"></span><br><span class="line">  db:</span><br><span class="line">    image: mysql</span><br><span class="line">    networks:</span><br><span class="line">       - overlay</span><br><span class="line">    volumes:</span><br><span class="line">      - db-data:/var/lib/mysql</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: somewordpress</span><br><span class="line">      MYSQL_DATABASE: wordpress</span><br><span class="line">      MYSQL_USER: wordpress</span><br><span class="line">      MYSQL_PASSWORD: wordpress</span><br><span class="line">    deploy:</span><br><span class="line">      placement:</span><br><span class="line">        constraints: [node.role == manager]</span><br><span class="line"></span><br><span class="line">  visualizer:</span><br><span class="line">    image: dockersamples/visualizer:stable</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8080:8080&quot;</span><br><span class="line">    stop_grace_period: 1m30s</span><br><span class="line">    volumes:</span><br><span class="line">      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;</span><br><span class="line">    deploy:</span><br><span class="line">      placement:</span><br><span class="line">        constraints: [node.role == manager]</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  db-data:</span><br><span class="line">networks:</span><br><span class="line">  overlay:</span><br></pre></td></tr></table></figure>
+<h3 id="部署compose"><a href="#部署compose" class="headerlink" title="部署compose"></a>部署compose</h3><p>部署服务使用 docker stack deploy，其中 -c 参数指定 compose 文件名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stack deploy -c docker-compose.yml wordpress</span><br></pre></td></tr></table></figure>
+<p>打开浏览器输入 任一节点IP:8080 即可看到各节点运行状态。如下图所示：</p>
+<p><img src="http://p95stksgt.bkt.clouddn.com/docker-swarm03.png" alt="docker-swarm03"></p>
+<h3 id="查看服务"><a href="#查看服务" class="headerlink" title="查看服务"></a>查看服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker stack ls</span><br><span class="line"></span><br><span class="line">NAME                SERVICES</span><br><span class="line">wordpress           3</span><br></pre></td></tr></table></figure>
+<h3 id="移除服务"><a href="#移除服务" class="headerlink" title="移除服务"></a>移除服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stack down wordpress</span><br></pre></td></tr></table></figure>
+<p>在 Swarm 集群管理节点新建该文件，其中的 visualizer 服务提供一个可视化页面，我们可以从浏览器中很直观的查看集群中各个服务的运行节点。</p>
+<p>在 Swarm 集群中使用 docker-compose.yml 我们用 docker stack 命令，下面我们对该命令进行详细讲解。</p>
+<h2 id="在-Swarm-集群中管理敏感数据"><a href="#在-Swarm-集群中管理敏感数据" class="headerlink" title="在 Swarm 集群中管理敏感数据"></a>在 Swarm 集群中管理敏感数据</h2><p>在动态的、大规模的分布式集群上，管理和分发 密码、证书 等敏感信息是极其重要的工作。传统的密钥分发方式（如密钥放入镜像中，设置环境变量，volume 动态挂载等）都存在着潜在的巨大的安全风险。</p>
+<p>Docker 目前已经提供了 secrets 管理功能，用户可以在 Swarm 集群中安全地管理密码、密钥证书等敏感数据，并允许在多个 Docker 容器实例之间共享访问指定的敏感数据。</p>
+<blockquote>
+<p><strong>注意： secret 也可以在 Docker Compose 中使用。</strong></p>
+</blockquote>
+<h3 id="创建-secret"><a href="#创建-secret" class="headerlink" title="创建 secret"></a>创建 secret</h3><ul>
+<li>创建文件 password.txt，里面存入 Mysql 的 root 密码</li>
+<li>创建文件 wordpress.yml，用于启动 mysql 和 wordpress 服务，内容：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">version: &apos;3.3&apos;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">   db:</span><br><span class="line">     image: mysql:latest</span><br><span class="line">     environment:</span><br><span class="line">       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password</span><br><span class="line">       MYSQL_DATABASE: wordpress</span><br><span class="line">     secrets:</span><br><span class="line">       - db_password</span><br><span class="line"></span><br><span class="line">   wordpress:</span><br><span class="line">     depends_on:</span><br><span class="line">       - db</span><br><span class="line">     image: wordpress:latest</span><br><span class="line">     ports:</span><br><span class="line">       - &quot;8000:80&quot;</span><br><span class="line">     environment:</span><br><span class="line">       WORDPRESS_DB_HOST: db:3306</span><br><span class="line">       WORDPRESS_DB_USER: root</span><br><span class="line">       WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password</span><br><span class="line">     secrets:</span><br><span class="line">       - db_password</span><br><span class="line"></span><br><span class="line">secrets:</span><br><span class="line">   db_password:</span><br><span class="line">     file: password.txt</span><br></pre></td></tr></table></figure>
+<p>启动 wordpress 服务:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stack deploy -c wordpress.yml wordpress</span><br></pre></td></tr></table></figure>
+<p>除了在Docker Componse里使用，也可以使用 docker secret create 命令以管道符的形式创建 secret</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ openssl rand -base64 20 | docker secret create mysql_password -</span><br><span class="line"></span><br><span class="line">$ openssl rand -base64 20 | docker secret create mysql_root_password -</span><br></pre></td></tr></table></figure>
+<p>创建 MySQL 服务:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ docker network create -d overlay mysql_private</span><br><span class="line"></span><br><span class="line">$ docker service create \</span><br><span class="line">     --name mysql \</span><br><span class="line">     --replicas 1 \</span><br><span class="line">     --network mysql_private \</span><br><span class="line">     --mount type=volume,source=mydata,destination=/var/lib/mysql \</span><br><span class="line">     --secret source=mysql_root_password,target=mysql_root_password \</span><br><span class="line">     --secret source=mysql_password,target=mysql_password \</span><br><span class="line">     -e MYSQL_ROOT_PASSWORD_FILE=&quot;/run/secrets/mysql_root_password&quot; \</span><br><span class="line">     -e MYSQL_PASSWORD_FILE=&quot;/run/secrets/mysql_password&quot; \</span><br><span class="line">     -e MYSQL_USER=&quot;wordpress&quot; \</span><br><span class="line">     -e MYSQL_DATABASE=&quot;wordpress&quot; \</span><br><span class="line">     mysql:latest</span><br></pre></td></tr></table></figure>
+<p>如果没有在 target 中显式的指定路径时，secret 默认通过 tmpfs 文件系统挂载到容器的 /run/secrets 目录中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">docker service create \</span><br><span class="line">     --name wordpress \</span><br><span class="line">     --replicas 1 \</span><br><span class="line">     --network mysql_private \</span><br><span class="line">     --publish target=30000,port=80 \</span><br><span class="line">     --mount type=volume,source=wpdata,destination=/var/www/html \</span><br><span class="line">     --secret source=mysql_password,target=wp_db_password,mode=0400 \</span><br><span class="line">     -e WORDPRESS_DB_USER=&quot;wordpress&quot; \</span><br><span class="line">     -e WORDPRESS_DB_PASSWORD_FILE=&quot;/run/secrets/wp_db_password&quot; \</span><br><span class="line">     -e WORDPRESS_DB_HOST=&quot;mysql:3306&quot; \</span><br><span class="line">     -e WORDPRESS_DB_NAME=&quot;wordpress&quot; \</span><br><span class="line">     wordpress:latest</span><br></pre></td></tr></table></figure>
+<p>通过以上方法，没有像以前通过设置环境变量来设置 MySQL 密码， 而是采用 docker secret 来设置密码，防范了密码泄露的风险。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在公司流量爆发的时候，只需要执行一个命令就可以完成实例上线。如果再根据公司的业务流量做自动化控制，那就真正实现了完全自动的动态伸缩。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+          
+            
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/06/28/docker-swarm/">Docker三剑客之Swarm项目</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 Cornelius 的个人博客">Cornelius</a></p>
+  <p><span>发布时间:</span>2018年06月28日 - 17:06</p>
+  <p><span>最后更新:</span>2018年06月28日 - 17:06</p>
+  <p><span>原始链接:</span><a href="/2018/06/28/docker-swarm/" title="Docker三剑客之Swarm项目">https://sunnyWu1104.github.io/2018/06/28/docker-swarm/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://sunnyWu1104.github.io/2018/06/28/docker-swarm/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>
+</div>
+<script>
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({
+          title: "",
+          text: '复制成功',
+          icon: "success",
+          showConfirmButton: true
+          });
+    });
+    });
+</script>
+
+
+          
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Cornelius 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Cornelius 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag"># Docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/28/deploy-strategy/" rel="next" title="项目平滑部署">
+                <i class="fa fa-chevron-left"></i> 项目平滑部署
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/28/github-green-command/" rel="prev" title="【github】为了让自己变得更绿">
+                【github】为了让自己变得更绿 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/cornelius.jpeg"
+                alt="Cornelius" />
+            
+              <p class="site-author-name" itemprop="name">Cornelius</p>
+              <p class="site-description motion-element" itemprop="description">种颗草也算是环保卫士</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sunnyWu1104" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wujiapengxp1104@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://example.com/" title="Title" target="_blank">Title</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么存在Swarm项目"><span class="nav-number">1.</span> <span class="nav-text">为什么存在Swarm项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Swarm的基本概念"><span class="nav-number">2.</span> <span class="nav-text">Docker Swarm的基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#节点"><span class="nav-number">2.1.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务和任务"><span class="nav-number">2.2.</span> <span class="nav-text">服务和任务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Swarm集群"><span class="nav-number">3.</span> <span class="nav-text">创建Swarm集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化集群"><span class="nav-number">3.1.</span> <span class="nav-text">初始化集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-virtualbox-创建管理节点"><span class="nav-number">3.1.1.</span> <span class="nav-text">使用 virtualbox 创建管理节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#增加工作节点"><span class="nav-number">3.1.2.</span> <span class="nav-text">增加工作节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查看集群"><span class="nav-number">3.1.3.</span> <span class="nav-text">查看集群</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署服务"><span class="nav-number">4.</span> <span class="nav-text">部署服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#新建服务"><span class="nav-number">4.1.</span> <span class="nav-text">新建服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控集群状态"><span class="nav-number">4.2.</span> <span class="nav-text">监控集群状态</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#弹性伸缩实验"><span class="nav-number">5.</span> <span class="nav-text">弹性伸缩实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在-Swarm-集群中使用-compose-文件"><span class="nav-number">6.</span> <span class="nav-text">在 Swarm 集群中使用 compose 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#部署compose"><span class="nav-number">6.1.</span> <span class="nav-text">部署compose</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看服务"><span class="nav-number">6.2.</span> <span class="nav-text">查看服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#移除服务"><span class="nav-number">6.3.</span> <span class="nav-text">移除服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在-Swarm-集群中管理敏感数据"><span class="nav-number">7.</span> <span class="nav-text">在 Swarm 集群中管理敏感数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-secret"><span class="nav-number">7.1.</span> <span class="nav-text">创建 secret</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cornelius</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">16.4k</span>
+  
+</div>
+
+<div class="powered-by">
+  <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+    本站访客数:<span id="busuanzi_value_site_uv"></span><span class="post-meta-divider">|</span>
+  </span>
+  </div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+<span class="post-meta-divider">|</span>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共16.4k字</span>
+</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
